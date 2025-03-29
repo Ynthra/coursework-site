@@ -35,39 +35,66 @@ prev = "0"
 // Function to change the active menu item and display the appropriate content
 function changeMenu(id) {
     if(document.getElementById(id).className == 'nav-item'){
-        const navItems = document.querySelectorAll('.nav-item'); // Get all nav items
-        navItems.forEach(item => item.classList.remove('active')); // Remove active class from all nav items
-        document.getElementById(id).classList.add('active'); // Add active class to clicked nav item
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => item.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
     }
+    
+    // Reset quiz state
+    conversionQuiz = new ConversionQuiz();
+    arithmeticQuiz = new ArithmeticQuiz();
+    asciiQuiz = new AsciiQuiz();
+    storageQuiz = new StorageUnitsQuiz();
+    
+    const answerInput = document.getElementById('answer-input');
+    if (answerInput) {
+        answerInput.value = '';
+    }
+
     switch (prev)
     {
-        case "0": //welcome page
+        case "0":
             document.getElementById('welcome-text').style.display = "none";
             break;
-        case "1": //arithmetic
+        case "1":
             document.getElementById('arithmetic-options-container').style.display = "none";
             document.getElementById('quiz-container').style.display = "none";
-        case "3": //conversion
+            break;
+        case "2":
+            document.getElementById('ascii-options-container').style.display = "none";
+            document.getElementById('quiz-container').style.display = "none";
+            break;
+        case "3":
             document.getElementById('conversion-options-container').style.display = "none";
             document.getElementById('quiz-container').style.display = "none";
             break;
-        default: //other (unimplemented) options
+        case "4":
+            document.getElementById('storage-options-container').style.display = "none";
+            document.getElementById('quiz-container').style.display = "none";
+            break;
+        default:
             document.getElementById('welcome-text').style.display = "none";
             break;
     }
     prev = id;
     switch (id)
     {
-        case "0": //welcome page
+        case "0":
             document.getElementById('welcome-text').style.display = "block";
             break;
         case "1":
             document.getElementById('arithmetic-options-container').style.display = "flex";
             break;
-        case "3": //conversion
+        case "2":
+            document.getElementById('ascii-options-container').style.display = "flex";
+            break;
+        case "3":
             document.getElementById('conversion-options-container').style.display = "flex";
             break;
-        default: //other (unimplemented) options
+        case "4":
+            document.getElementById('storage-options-container').style.display = "flex";
+            break;
+        default:
             document.getElementById('welcome-text').style.display = "block";
             break;
     }
@@ -187,17 +214,240 @@ class ConversionQuiz extends Quiz {
 }
 
 class ArithmeticQuiz extends Quiz {
-    constructor(){
+    constructor() {
         super();
+        this.operations = ['+', '-'];
+        this.isSigned = false;
     }
+
     displayResults() {
-        //implement on derived class
+        const questionElement = document.getElementById('question');
+        questionElement.textContent = `Quiz completed! Your score: ${this.score}/${this.questions.length}`;
     }
-    displayQuestionText(question) {
-        //implement on derived class
+
+    displayQuestionText() {
+        const questionElement = document.getElementById('question');
+        const q = this.questions[this.currentQuestion];
+        questionElement.textContent = `Calculate: ${q.num1} ${q.operation} ${q.num2} in binary` + 
+                                    (this.isSigned ? " (using two's complement)" : "");
     }
-    generateQuestions(){
-        //implement on derived class
+
+    generateQuestions() {
+        this.currentQuestion = 0;
+        this.numQuestions = Number(document.getElementById('num-arithmetic-questions').value);
+        this.isSigned = document.getElementById('signed').checked;
+        this.questions = [];
+
+        const maxVal = this.isSigned ? 127 : 255;  // 8-bit signed vs unsigned
+        const minVal = this.isSigned ? -128 : 0;
+
+        for (let i = 0; i < this.numQuestions; i++) {
+            const num1 = getRandomInt(minVal, maxVal);
+            const num2 = getRandomInt(minVal, maxVal);
+            const operation = this.operations[Math.floor(Math.random() * this.operations.length)];
+            
+            let result;
+            if (operation === '+') {
+                result = num1 + num2;
+            } else {
+                result = num1 - num2;
+            }
+
+            // Convert to binary representation
+            const num1Binary = this.toBinaryString(num1);
+            const num2Binary = this.toBinaryString(num2);
+            const resultBinary = this.toBinaryString(result);
+
+            this.questions.push({
+                num1: num1Binary,
+                num2: num2Binary,
+                operation: operation,
+                correctAnswer: resultBinary
+            });
+        }
+    }
+
+    toBinaryString(num) {
+        if (this.isSigned) {
+            // Handle two's complement for 8-bit numbers
+            if (num < 0) {
+                num = 256 + num; // Convert to two's complement
+            }
+            return num.toString(2).padStart(8, '0');
+        } else {
+            return num.toString(2);
+        }
+    }
+
+    fromBinaryString(binary) {
+        if (this.isSigned) {
+            // Handle two's complement
+            let num = parseInt(binary, 2);
+            if (num > 127) { // If the number is negative in two's complement
+                num = num - 256;
+            }
+            return num;
+        } else {
+            return parseInt(binary, 2);
+        }
+    }
+
+    isCorrect() {
+        const element = document.getElementById('answer-input');
+        const userAnswer = element.value.trim().replace(/\s/g, ''); // Remove all whitespace
+        const correctAnswer = this.questions[this.currentQuestion].correctAnswer;
+        
+        // Convert both answers to decimal and compare
+        try {
+            const userDecimal = this.fromBinaryString(userAnswer);
+            const correctDecimal = this.fromBinaryString(correctAnswer);
+            return userDecimal === correctDecimal;
+        } catch (e) {
+            return false; // Invalid binary input
+        }
+    }
+
+    checkAnswer() {
+        if (this.isCorrect()) {
+            this.score++;
+            alert('Correct!');
+        } else {
+            alert(`Incorrect. The answer was ${this.questions[this.currentQuestion].correctAnswer}`);
+        }
+        this.currentQuestion++;
+        this.displayNext();
+    }
+}
+
+class AsciiQuiz extends Quiz {
+    constructor() {
+        super();
+        this.direction = 'toAscii';
+    }
+
+    displayResults() {
+        const questionElement = document.getElementById('question');
+        questionElement.textContent = `Quiz completed! Your score: ${this.score}/${this.questions.length}`;
+    }
+
+    displayQuestionText() {
+        const questionElement = document.getElementById('question');
+        const q = this.questions[this.currentQuestion];
+        if (this.direction === 'toAscii') {
+            questionElement.textContent = `Convert the character '${q.question}' to its ASCII value`;
+        } else {
+            questionElement.textContent = `Convert the ASCII value ${q.question} to its character representation`;
+        }
+    }
+
+    generateQuestions() {
+        this.currentQuestion = 0;
+        this.numQuestions = Number(document.getElementById('num-ascii-questions').value);
+        this.direction = document.getElementById('ascii-direction').value;
+        this.questions = [];
+
+        for (let i = 0; i < this.numQuestions; i++) {
+            const asciiValue = getRandomInt(32, 126); // Printable ASCII range
+            if (this.direction === 'toAscii') {
+                this.questions.push({
+                    question: String.fromCharCode(asciiValue),
+                    correctAnswer: asciiValue
+                });
+            } else {
+                this.questions.push({
+                    question: asciiValue,
+                    correctAnswer: String.fromCharCode(asciiValue)
+                });
+            }
+        }
+    }
+
+    isCorrect() {
+        const element = document.getElementById('answer-input');
+        const userAnswer = element.value.trim();
+        const correctAnswer = this.questions[this.currentQuestion].correctAnswer;
+        
+        if (this.direction === 'toAscii') {
+            return Number(userAnswer) === correctAnswer;
+        } else {
+            return userAnswer === correctAnswer;
+        }
+    }
+
+    checkAnswer() {
+        if (this.isCorrect()) {
+            this.score++;
+            alert('Correct!');
+        } else {
+            alert(`Incorrect. The answer was ${this.questions[this.currentQuestion].correctAnswer}`);
+        }
+        this.currentQuestion++;
+        this.displayNext();
+    }
+}
+
+class StorageUnitsQuiz extends Quiz {
+    constructor() {
+        super();
+        this.units = ['B', 'KB', 'MB', 'GB', 'TB'];
+    }
+
+    displayResults() {
+        const questionElement = document.getElementById('question');
+        questionElement.textContent = `Quiz completed! Your score: ${this.score}/${this.questions.length}`;
+    }
+
+    displayQuestionText() {
+        const questionElement = document.getElementById('question');
+        const q = this.questions[this.currentQuestion];
+        questionElement.textContent = `Convert ${q.question}`;
+    }
+
+    generateQuestions() {
+        this.currentQuestion = 0;
+        this.numQuestions = Number(document.getElementById('num-storage-questions').value);
+        this.questions = [];
+
+        for (let i = 0; i < this.numQuestions; i++) {
+            const fromUnit = this.units[getRandomInt(0, 4)];
+            let toUnit;
+            do {
+                toUnit = this.units[getRandomInt(0, 4)];
+            } while (toUnit === fromUnit);
+
+            const value = getRandomInt(1, 1000);
+            const question = `${value} ${fromUnit} to ${toUnit}`;
+            const correctAnswer = this.convertStorage(value, fromUnit, toUnit);
+
+            this.questions.push({
+                question: question,
+                correctAnswer: correctAnswer
+            });
+        }
+    }
+
+    convertStorage(value, fromUnit, toUnit) {
+        const fromIndex = this.units.indexOf(fromUnit);
+        const toIndex = this.units.indexOf(toUnit);
+        const difference = fromIndex - toIndex;
+        return value * Math.pow(1000, difference);
+    }
+
+    isCorrect() {
+        const element = document.getElementById('answer-input');
+        const userAnswer = Number(element.value.trim());
+        return userAnswer === this.questions[this.currentQuestion].correctAnswer;
+    }
+
+    checkAnswer() {
+        if (this.isCorrect()) {
+            this.score++;
+            alert('Correct!');
+        } else {
+            alert(`Incorrect. The answer was ${this.questions[this.currentQuestion].correctAnswer}`);
+        }
+        this.currentQuestion++;
+        this.displayNext();
     }
 }
 
@@ -212,28 +462,50 @@ function submitConversion(){
 }
 
 var arithmeticQuiz = new ArithmeticQuiz();
-function submitArithmetic(){
+function submitArithmetic() {
     document.getElementById('arithmetic-options-container').style.display = 'none';
     document.getElementById('quiz-container').style.display = 'flex';
     arithmeticQuiz.generateQuestions();
     arithmeticQuiz.displayQuestionText();
 }
 
-function checkAnswer(){
+var asciiQuiz = new AsciiQuiz();
+function submitAscii() {
+    document.getElementById('ascii-options-container').style.display = 'none';
+    document.getElementById('quiz-container').style.display = 'flex';
+    asciiQuiz.generateQuestions();
+    asciiQuiz.displayQuestionText();
+}
 
-    //get all nav items, and find the id of the active one
+var storageQuiz = new StorageUnitsQuiz();
+function submitStorage() {
+    document.getElementById('storage-options-container').style.display = 'none';
+    document.getElementById('quiz-container').style.display = 'flex';
+    storageQuiz.generateQuestions();
+    storageQuiz.displayQuestionText();
+}
+
+function checkAnswer() {
     const navItems = document.querySelectorAll('.nav-item');
-    id = "";
+    let id = "";
     navItems.forEach(item => {
-        if (item.classList.contains('active')){
+        if (item.classList.contains('active')) {
             id = item.id;
         }
     });
 
-    switch (id){
+    switch (id) {
         case "1":
+            arithmeticQuiz.checkAnswer();
+            break;
+        case "2":
+            asciiQuiz.checkAnswer();
+            break;
         case "3":
             conversionQuiz.checkAnswer();
+            break;
+        case "4":
+            storageQuiz.checkAnswer();
             break;
         default:
             break;

@@ -56,10 +56,7 @@
                         <input type="checkbox" id="signed" name="signed">
                     </div>
                     
-                    
-                    <div class="button" onclick="document.getElementById('arithmetic-options-container').style.display = 'none';
-                                                 document.getElementById('quiz-container').style.display = 'flex';
-                                                 console.log(document.getElementById('signed').checked)">
+                    <div class="button" onclick="submitArithmetic()">
                         Submit
                     </div>
                 </div>
@@ -79,6 +76,33 @@
                     </div>
  
                     <div class="button" onclick="submitConversion()">
+                        Submit
+                    </div>
+                </div>
+
+                <div class="container" id="ascii-options-container">
+                    <div class="options">
+                        <label for="num-ascii-questions">How many questions</label>
+                        <input type="number" id="num-ascii-questions" name="num-questions" min="1" max="20" value="5">
+                    </div>
+                    <div class="options">
+                        <label for="ascii-direction">Convert from</label>
+                        <select id="ascii-direction">
+                            <option value="toAscii">Text to ASCII</option>
+                            <option value="fromAscii">ASCII to Text</option>
+                        </select>
+                    </div>
+                    <div class="button" onclick="submitAscii()">
+                        Submit
+                    </div>
+                </div>
+
+                <div class="container" id="storage-options-container">
+                    <div class="options">
+                        <label for="num-storage-questions">How many questions</label>
+                        <input type="number" id="num-storage-questions" name="num-questions" min="1" max="20" value="5">
+                    </div>
+                    <div class="button" onclick="submitStorage()">
                         Submit
                     </div>
                 </div>
