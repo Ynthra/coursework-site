@@ -40,11 +40,11 @@ function changeMenu(id) {
         document.getElementById(id).classList.add('active');
     }
     
-    // Reset quiz state
-    conversionQuiz = new ConversionQuiz();
-    arithmeticQuiz = new ArithmeticQuiz();
-    asciiQuiz = new AsciiQuiz();
-    storageQuiz = new StorageUnitsQuiz();
+    // Reset quiz states
+    conversionQuiz.reset();
+    arithmeticQuiz.reset();
+    asciiQuiz.reset();
+    storageQuiz.reset();
     
     const answerInput = document.getElementById('answer-input');
     if (answerInput) {
@@ -107,6 +107,14 @@ class Quiz {
         this.numQuestions = 0;
         this.questions = [];
     }
+
+    reset() {
+        this.currentQuestion = 0;
+        this.score = 0;
+        this.numQuestions = 0;
+        this.questions = [];
+    }
+    
     displayNext() { 
         if (this.currentQuestion < this.numQuestions) {
             const question = this.questions[this.currentQuestion].question;
@@ -195,6 +203,7 @@ class ConversionQuiz extends Quiz {
     }
 
     isCorrect(){
+        if (this.currentQuestion >= this.questions.length) return false;
         const element = document.getElementById('answer-input');
         const value = element.value.trim(); // removes whitespace
         return Number(value) == this.questions[this.currentQuestion].correctAnswer; //converts from string to float and compares
@@ -211,6 +220,16 @@ class ConversionQuiz extends Quiz {
         this.displayNext();
     }
 
+    submit() {
+        document.getElementById('conversion-options-container').style.display = 'none';
+        document.getElementById('quiz-container').style.display = 'flex';
+        this.generateQuestions(
+            document.getElementById('num-conversion-questions').value,
+            document.getElementById('base-from').value,
+            document.getElementById('base-to').value
+        );
+        this.displayQuestionText();
+    }
 }
 
 class ArithmeticQuiz extends Quiz {
@@ -293,6 +312,7 @@ class ArithmeticQuiz extends Quiz {
     }
 
     isCorrect() {
+        if (this.currentQuestion >= this.questions.length) return false;
         const element = document.getElementById('answer-input');
         const userAnswer = element.value.trim().replace(/\s/g, ''); // Remove all whitespace
         const correctAnswer = this.questions[this.currentQuestion].correctAnswer;
@@ -316,6 +336,13 @@ class ArithmeticQuiz extends Quiz {
         }
         this.currentQuestion++;
         this.displayNext();
+    }
+
+    submit() {
+        document.getElementById('arithmetic-options-container').style.display = 'none';
+        document.getElementById('quiz-container').style.display = 'flex';
+        this.generateQuestions();
+        this.displayQuestionText();
     }
 }
 
@@ -363,6 +390,7 @@ class AsciiQuiz extends Quiz {
     }
 
     isCorrect() {
+        if (this.currentQuestion >= this.questions.length) return false;
         const element = document.getElementById('answer-input');
         const userAnswer = element.value.trim();
         const correctAnswer = this.questions[this.currentQuestion].correctAnswer;
@@ -383,6 +411,13 @@ class AsciiQuiz extends Quiz {
         }
         this.currentQuestion++;
         this.displayNext();
+    }
+
+    submit() {
+        document.getElementById('ascii-options-container').style.display = 'none';
+        document.getElementById('quiz-container').style.display = 'flex';
+        this.generateQuestions();
+        this.displayQuestionText();
     }
 }
 
@@ -434,6 +469,7 @@ class StorageUnitsQuiz extends Quiz {
     }
 
     isCorrect() {
+        if (this.currentQuestion >= this.questions.length) return false;
         const element = document.getElementById('answer-input');
         const userAnswer = Number(element.value.trim());
         return userAnswer === this.questions[this.currentQuestion].correctAnswer;
@@ -449,41 +485,20 @@ class StorageUnitsQuiz extends Quiz {
         this.currentQuestion++;
         this.displayNext();
     }
+
+    submit() {
+        document.getElementById('storage-options-container').style.display = 'none';
+        document.getElementById('quiz-container').style.display = 'flex';
+        this.generateQuestions();
+        this.displayQuestionText();
+    }
 }
 
-var conversionQuiz = new ConversionQuiz();
-function submitConversion(){
-    document.getElementById('conversion-options-container').style.display = 'none';
-    document.getElementById('quiz-container').style.display = 'flex';
-    conversionQuiz.generateQuestions(document.getElementById('num-conversion-questions').value
-                                    ,document.getElementById('base-from').value
-                                    ,document.getElementById('base-to').value);
-    conversionQuiz.displayQuestionText();
-}
-
-var arithmeticQuiz = new ArithmeticQuiz();
-function submitArithmetic() {
-    document.getElementById('arithmetic-options-container').style.display = 'none';
-    document.getElementById('quiz-container').style.display = 'flex';
-    arithmeticQuiz.generateQuestions();
-    arithmeticQuiz.displayQuestionText();
-}
-
-var asciiQuiz = new AsciiQuiz();
-function submitAscii() {
-    document.getElementById('ascii-options-container').style.display = 'none';
-    document.getElementById('quiz-container').style.display = 'flex';
-    asciiQuiz.generateQuestions();
-    asciiQuiz.displayQuestionText();
-}
-
-var storageQuiz = new StorageUnitsQuiz();
-function submitStorage() {
-    document.getElementById('storage-options-container').style.display = 'none';
-    document.getElementById('quiz-container').style.display = 'flex';
-    storageQuiz.generateQuestions();
-    storageQuiz.displayQuestionText();
-}
+// Initialize quiz instances
+const conversionQuiz = new ConversionQuiz();
+const arithmeticQuiz = new ArithmeticQuiz();
+const asciiQuiz = new AsciiQuiz();
+const storageQuiz = new StorageUnitsQuiz();
 
 function checkAnswer() {
     const navItems = document.querySelectorAll('.nav-item');
