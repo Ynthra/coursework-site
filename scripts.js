@@ -425,6 +425,7 @@ class StorageUnitsQuiz extends Quiz {
     constructor() {
         super();
         this.units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        this.questionTypes = ['unit_conversion', 'sound_file', 'image_file', 'text_file'];
     }
 
     displayResults() {
@@ -435,7 +436,13 @@ class StorageUnitsQuiz extends Quiz {
     displayQuestionText() {
         const questionElement = document.getElementById('question');
         const q = this.questions[this.currentQuestion];
-        questionElement.textContent = `Convert ${q.question}`;
+        questionElement.textContent = q.question;
+        
+        // Display formula hint if it exists
+        const formulaElement = document.getElementById('formula-hint');
+        if (formulaElement) {
+            formulaElement.textContent = q.formula || '';
+        }
     }
 
     generateQuestions() {
@@ -444,21 +451,110 @@ class StorageUnitsQuiz extends Quiz {
         this.questions = [];
 
         for (let i = 0; i < this.numQuestions; i++) {
-            const fromUnit = this.units[getRandomInt(0, 4)];
-            let toUnit;
-            do {
-                toUnit = this.units[getRandomInt(0, 4)];
-            } while (toUnit === fromUnit);
-
-            const value = getRandomInt(1, 1000);
-            const question = `${value} ${fromUnit} to ${toUnit}`;
-            const correctAnswer = this.convertStorage(value, fromUnit, toUnit);
-
-            this.questions.push({
-                question: question,
-                correctAnswer: correctAnswer
-            });
+            const questionType = this.questionTypes[getRandomInt(0, this.questionTypes.length - 1)];
+            
+            switch(questionType) {
+                case 'unit_conversion':
+                    this.addUnitConversionQuestion();
+                    break;
+                case 'sound_file':
+                    this.addSoundFileQuestion();
+                    break;
+                case 'image_file':
+                    this.addImageFileQuestion();
+                    break;
+                case 'text_file':
+                    this.addTextFileQuestion();
+                    break;
+            }
         }
+    }
+
+    addUnitConversionQuestion() {
+        const fromUnit = this.units[getRandomInt(0, 4)];
+        let toUnit;
+        do {
+            toUnit = this.units[getRandomInt(0, 4)];
+        } while (toUnit === fromUnit);
+
+        const value = getRandomInt(1, 1000);
+        const question = `Convert ${value} ${fromUnit} to ${toUnit}`;
+        const correctAnswer = this.convertStorage(value, fromUnit, toUnit);
+
+        this.questions.push({
+            question: question,
+            correctAnswer: correctAnswer,
+            type: 'unit_conversion'
+        });
+    }
+
+    addSoundFileQuestion() {
+        // Common sample rates: 44.1kHz, 48kHz, 96kHz
+        const sampleRates = [44100, 48000, 96000];
+        // Common bit depths: 16-bit, 24-bit, 32-bit
+        const bitDepths = [16, 24, 32];
+        
+        const sampleRate = sampleRates[getRandomInt(0, sampleRates.length - 1)];
+        const bitDepth = bitDepths[getRandomInt(0, bitDepths.length - 1)];
+        const duration = getRandomInt(1, 10); // 1-10 seconds
+        
+        const fileSizeInBits = sampleRate * duration * bitDepth;
+        const fileSizeInBytes = Math.ceil(fileSizeInBits / 8);
+
+        this.questions.push({
+            question: `Calculate the file size in bytes for an audio file with:\n` +
+                     `Sample rate: ${sampleRate} Hz\n` +
+                     `Duration: ${duration} seconds\n` +
+                     `Bit depth: ${bitDepth} bits`,
+            correctAnswer: fileSizeInBytes,
+            type: 'sound_file',
+            formula: 'File size = sample rate × duration × bit depth ÷ 8'
+        });
+    }
+
+    addImageFileQuestion() {
+        // Common color depths: 8-bit (256 colors), 24-bit (True color)
+        const colorDepths = [8, 24];
+        const colorDepth = colorDepths[getRandomInt(0, colorDepths.length - 1)];
+        
+        // Generate reasonable image dimensions
+        const width = getRandomInt(800, 1920);
+        const height = getRandomInt(600, 1080);
+        
+        const fileSizeInBits = colorDepth * height * width;
+        const fileSizeInBytes = Math.ceil(fileSizeInBits / 8);
+
+        this.questions.push({
+            question: `Calculate the uncompressed file size in bytes for an image with:\n` +
+                     `Resolution: ${width}×${height} pixels\n` +
+                     `Color depth: ${colorDepth}-bit`,
+            correctAnswer: fileSizeInBytes,
+            type: 'image_file',
+            formula: 'File size = color depth × height × width ÷ 8'
+        });
+    }
+
+    addTextFileQuestion() {
+        // Using ASCII (8 bits per character) or UTF-8 (8-32 bits per character)
+        const encodings = [
+            { name: 'ASCII', bits: 8 },
+            { name: 'UTF-8', bits: 8 } // Simplified to 8 bits for basic Latin characters
+        ];
+        
+        const encoding = encodings[getRandomInt(0, encodings.length - 1)];
+        const numCharacters = getRandomInt(100, 1000);
+        
+        const fileSizeInBits = encoding.bits * numCharacters;
+        const fileSizeInBytes = Math.ceil(fileSizeInBits / 8);
+
+        this.questions.push({
+            question: `Calculate the file size in bytes for a text file with:\n` +
+                     `Number of characters: ${numCharacters}\n` +
+                     `Encoding: ${encoding.name} (${encoding.bits} bits per character)`,
+            correctAnswer: fileSizeInBytes,
+            type: 'text_file',
+            formula: 'File size = bits per character × number of characters ÷ 8'
+        });
     }
 
     convertStorage(value, fromUnit, toUnit) {
@@ -478,7 +574,12 @@ class StorageUnitsQuiz extends Quiz {
     checkAnswer() {
         if (this.isCorrect()) {
             this.score++;
-            alert('Correct!');
+            const q = this.questions[this.currentQuestion];
+            let message = 'Correct!';
+            if (q.formula) {
+                message += `\nFormula used: ${q.formula}`;
+            }
+            alert(message);
         } else {
             alert(`Incorrect. The answer was ${this.questions[this.currentQuestion].correctAnswer}`);
         }
