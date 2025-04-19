@@ -458,8 +458,7 @@ class StorageUnitsQuiz extends Quiz {
         if (this.currentQuestionIndex < this.questions.length) {
             const q = this.questions[this.currentQuestionIndex];
             if (questionElement) {
-                questionElement.innerHTML = q.question.replace(/
-/g, '<br>'); // Use innerHTML to render <br>
+                questionElement.innerHTML = q.question.replace(//g, '<br>'); // Use innerHTML to render <br>
             }
             if (formulaHintElement) {
                  formulaHintElement.textContent = q.formula || '';
