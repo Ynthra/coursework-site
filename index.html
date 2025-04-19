@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>my site</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="scripts.js"></script> 
+    <script src="scripts.js" defer></script> 
 </head>
 <body> 
     <header>
-        <div class="hamburger" onclick="openNav()">
+        <div class="hamburger"> <!-- Removed onclick, listener added in JS -->
             <div class="bar"></div>
             <div class="bar"></div>
             <div class="bar"></div>
@@ -18,8 +18,8 @@
     </header>
 
     <div class="side-nav">
-        <a class="closebtn" onclick="closeNav();return 0;">&times;</a>
-        <a onclick = "changeMenu('0')">Home</a>
+        <a class="closebtn">&times;</a> <!-- Removed onclick, listener added in JS -->
+        <a href="#" class="nav-link" data-menu-id="0">Home</a> <!-- Use class/data-attribute for JS hook -->
         <a href="#progress">Progress</a>
         <a href="#account">Account</a>
         <a href="#tutorials">Tutorials</a>
@@ -27,10 +27,11 @@
 
     <nav class="topnav">
         <ul>
-            <li><a class="nav-item" id = "1" onclick="changeMenu('1')" href="#arithmetic">Binary Arithmetic</a></li>
-            <li><a class="nav-item" id = "2" onclick="changeMenu('2')" href="#ASCII">ASCII</a></li>
-            <li><a class="nav-item" id = "3" onclick="changeMenu('3')" href="#conversion">Conversion</a></li>
-            <li><a class="nav-item" id = "4" onclick="changeMenu('4')" href="#units">Storage Units</a></li>
+            <!-- Removed inline onclick, listeners added in JS -->
+            <li><a class="nav-item" id="1" href="#arithmetic">Binary Arithmetic</a></li>
+            <li><a class="nav-item" id="2" href="#ASCII">ASCII</a></li>
+            <li><a class="nav-item" id="3" href="#conversion">Conversion</a></li>
+            <li><a class="nav-item" id="4" href="#units">Storage Units</a></li>
         </ul>
     </nav>
 
@@ -46,71 +47,68 @@
                     topic to take a quiz on it.
                 </h2>
 
-                <div class="container" id="arithmetic-options-container">
+                <!-- Options Containers (Simplified Structure) -->
+                <div class="container options-container" id="arithmetic-options-container" style="display: none;">
+                    <h3>Binary Arithmetic Options</h3>
                     <div class="options">
-                        <label for="num-questions">How many questions</label>
+                        <label for="num-arithmetic-questions">Number of questions:</label>
                         <input type="number" id="num-arithmetic-questions" name="num-questions" min="1" max="20" value="5">
                     </div>
                     <div class="options">
-                        <label for="signed">Tick to make the questions use twos complement</label>
                         <input type="checkbox" id="signed" name="signed">
+                        <label for="signed">Use two's complement (8-bit)</label>
                     </div>
-                    
-                    <button class="button" onclick="arithmeticQuiz.submit()">
-                        Submit
-                    </button>
+                    <button class="button" id="start-arithmetic-quiz">Start Quiz</button> <!-- ID for JS listener -->
                 </div>
 
-                <div class="container" id="conversion-options-container">
+                <div class="container options-container" id="conversion-options-container" style="display: none;">
+                     <h3>Number Base Conversion Options</h3>
                     <div class="options">
-                        <label for="num-questions">How many questions</label>
+                        <label for="num-conversion-questions">Number of questions:</label>
                         <input type="number" id="num-conversion-questions" name="num-questions" min="1" max="20" value="5">
                     </div>
                     <div class="options">
-                        <label for="base-from">What base to convert from</label>
-                        <input type="number" id="base-from" name="base-from" min="2" max="64" value="2">
+                        <label for="base-from">Convert from base:</label>
+                        <input type="number" id="base-from" name="base-from" min="2" max="36" value="10">
                     </div>
                     <div class="options">
-                        <label for="base-to">What base to convert to</label>
-                        <input type="number" id="base-to" name="base-to" min="2" max="64" value="10">
+                        <label for="base-to">Convert to base:</label>
+                        <input type="number" id="base-to" name="base-to" min="2" max="36" value="2">
                     </div>
- 
-                    <button class="button" onclick="conversionQuiz.submit()">
-                        Submit
-                    </button>
+                    <button class="button" id="start-conversion-quiz">Start Quiz</button> <!-- ID for JS listener -->
                 </div>
 
-                <div class="container" id="ascii-options-container">
+                 <div class="container options-container" id="ascii-options-container" style="display: none;">
+                     <h3>ASCII Conversion Options</h3>
                     <div class="options">
-                        <label for="num-ascii-questions">How many questions</label>
+                        <label for="num-ascii-questions">Number of questions:</label>
                         <input type="number" id="num-ascii-questions" name="num-questions" min="1" max="20" value="5">
                     </div>
                     <div class="options">
-                        <label for="ascii-direction">Convert from</label>
+                        <label for="ascii-direction">Conversion direction:</label>
                         <select id="ascii-direction">
-                            <option value="toAscii">Text to ASCII</option>
-                            <option value="fromAscii">ASCII to Text</option>
+                            <option value="toAscii">Character to ASCII Value</option>
+                            <option value="fromAscii">ASCII Value to Character</option>
                         </select>
                     </div>
-                    <button class="button" onclick="asciiQuiz.submit()">
-                        Submit
-                    </button>
+                    <button class="button" id="start-ascii-quiz">Start Quiz</button> <!-- ID for JS listener -->
                 </div>
 
-                <div class="container" id="storage-options-container">
+                 <div class="container options-container" id="storage-options-container" style="display: none;">
+                     <h3>Storage Unit Calculation Options</h3>
                     <div class="options">
-                        <label for="num-storage-questions">How many questions</label>
+                        <label for="num-storage-questions">Number of questions:</label>
                         <input type="number" id="num-storage-questions" name="num-questions" min="1" max="20" value="5">
                     </div>
-                    <button class="button" onclick="storageQuiz.submit()">
-                        Submit
-                    </button>
+                    <button class="button" id="start-storage-quiz">Start Quiz</button> <!-- ID for JS listener -->
                 </div>
 
-                <div class="container" id ="quiz-container">
-                    <h2 id="question" ></h2>
+                <!-- Main Quiz Area -->
+                <div class="container" id="quiz-container" style="display: none;"> <!-- Initially hidden -->
+                    <h3 id="question">Question text will appear here.</h3>
+                     <p id="formula-hint" class="formula"></p> 
                     <textarea id="answer-input" placeholder="Enter your answer here"></textarea>
-                    <div class="button" onclick="checkAnswer()">Submit</div>
+                    <button class="button" id="submit-answer-btn">Submit Answer</button> <!-- ID for JS listener -->
                 </div>
             </div>
 
@@ -120,6 +118,7 @@
     </main>
 
     <footer>
+        <!-- Footer content can go here -->
     </footer>
 </body>
 </html>
