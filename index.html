@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>my site</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="scripts.js" defer></script>
+    <style>
+        .tutorials-topic h2 {
+            text-align: center;
+            margin-top: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="hamburger">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        <h1 id="site-title" style="cursor:pointer;">Computing Tests</h1>
+    </header>
+
+    <div class="side-nav">
+        <a class="closebtn">&times;</a>
+        <a href="#" class="nav-link" id="home">Home</a>
+        <a href="#progress" id="progress">Progress</a>
+        <a href="#tutorials" id="tutorials">Tutorials</a>
+        <div style="padding: 16px;">
+            <button id="export-progress-btn" class="button" style="width:100%;margin-bottom:8px;">Export
+                Progress</button>
+            <button id="import-progress-btn" class="button" style="width:100%;">Import Progress</button>
+            <input type="file" id="import-progress-file" accept="application/json" style="display:none;">
+        </div>
+    </div>
+
+    <nav class="topnav">
+        <ul>
+            <li><a class="nav-item" id="arithmetic" href="#arithmetic">Binary Arithmetic</a></li>
+            <li><a class="nav-item" id="ascii" href="#ASCII">ASCII</a></li>
+            <li><a class="nav-item" id="conversion" href="#conversion">Conversion</a></li>
+            <li><a class="nav-item" id="storage" href="#units">Storage Units</a></li>
+            <li><a class="nav-item" id="nonint" href="#nonint">Non-Integer Binary</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="content">
+
+            <div class="side"></div>
+
+            <div class="main">
+                <h2 id="welcome-text">
+                    Welcome to the website! This website is designed to help you learn about binary
+                    and how it is used in computing. You can use the navigation bar above to select a
+                    topic to take a quiz on it or view information about it in the tutorials section.
+                    Or you can view your progression over time in the progress section.
+                </h2>
+                <div class="container options-container" id="arithmetic-options-container" style="display: none;">
+                    <div class="options">
+                        <label for="num-arithmetic-questions">Number of questions:</label>
+                        <input type="number" id="num-arithmetic-questions" name="num-questions" min="1" max="20"
+                            value="5">
+                    </div>
+                    <div class="options">
+                        <input type="checkbox" id="signed" name="signed">
+                        <label for="signed">Use two's complement (8-bit)</label>
+                    </div>
+                    <button class="button" id="start-arithmetic-quiz">Start Quiz</button>
+                </div>
+
+                <div class="container options-container" id="conversion-options-container" style="display: none;">
+                    <div class="options">
+                        <label for="num-conversion-questions">Number of questions:</label>
+                        <input type="number" id="num-conversion-questions" name="num-questions" min="1" max="20"
+                            value="5">
+                    </div>
+                    <div class="options">
+                        <label for="base-from">Convert from base:</label>
+                        <input type="number" id="base-from" name="base-from" min="2" max="36" value="10">
+                    </div>
+                    <div class="options">
+                        <label for="base-to">Convert to base:</label>
+                        <input type="number" id="base-to" name="base-to" min="2" max="36" value="2">
+                    </div>
+                    <button class="button" id="start-conversion-quiz">Start Quiz</button>
+                </div>
+
+                <div class="container options-container" id="ascii-options-container" style="display: none;">
+                    <div class="options">
+                        <label for="num-ascii-questions">Number of questions:</label>
+                        <input type="number" id="num-ascii-questions" name="num-questions" min="1" max="20" value="5">
+                    </div>
+                    <div class="options">
+                        <label for="ascii-direction">Conversion direction:</label>
+                        <select id="ascii-direction">
+                            <option value="toAscii">Character to ASCII Value</option>
+                            <option value="fromAscii">ASCII Value to Character</option>
+                        </select>
+                    </div>
+                    <button class="button" id="start-ascii-quiz">Start Quiz</button>
+                </div>
+
+                <div class="container options-container" id="storage-options-container" style="display: none;">
+                    <div class="options">
+                        <label for="num-storage-questions">Number of questions:</label>
+                        <input type="number" id="num-storage-questions" name="num-questions" min="1" max="20" value="5">
+                    </div>
+                    <div class="options">
+                        <label>Question types:</label><br>
+                        <input type="checkbox" id="storage-type-unit_conversion" checked>
+                        <label for="storage-type-unit_conversion">Unit Conversion</label><br>
+                        <input type="checkbox" id="storage-type-sound_file" checked>
+                        <label for="storage-type-sound_file">Sound File</label><br>
+                        <input type="checkbox" id="storage-type-image_file" checked>
+                        <label for="storage-type-image_file">Image File</label><br>
+                        <input type="checkbox" id="storage-type-text_file" checked>
+                        <label for="storage-type-text_file">Text File</label>
+                    </div>
+                    <button class="button" id="start-storage-quiz">Start Quiz</button>
+                </div>
+
+                <div class="container options-container" id="nonint-options-container" style="display: none;">
+                    <div class="options">
+                        <label for="num-nonint-questions">Number of questions:</label>
+                        <input type="number" id="num-nonint-questions" name="num-questions" min="1" max="20" value="5">
+                    </div>
+                    <div class="options">
+                        <label for="nonint-type">Type:</label>
+                        <select id="nonint-type">
+                            <option value="fixed">Fixed Point (unsigned)</option>
+                            <option value="float">Floating Point (two's complement)</option>
+                        </select>
+                    </div>
+                    <div class="options">
+                        <label>Question types:</label><br>
+                        <input type="checkbox" id="nonint-type-add" checked>
+                        <label for="nonint-type-add">Addition</label><br>
+                        <input type="checkbox" id="nonint-type-sub" checked>
+                        <label for="nonint-type-sub">Subtraction</label><br>
+                        <input type="checkbox" id="nonint-type-norm" checked>
+                        <label for="nonint-type-norm">Normalisation</label><br>
+                        <input type="checkbox" id="nonint-type-base10" checked>
+                        <label for="nonint-type-base10">Binary to Base 10</label>
+                    </div>
+                    <button class="button" id="start-nonint-quiz">Start Quiz</button>
+                </div>
+
+                <section id="progress-section" style="display:none;">
+                    <canvas id="progress-graph" width="900" height="450"></canvas>
+                </section>
+
+                <section id="tutorials-section" style="display:none;">
+                    <div id="tutorials-home" class="tutorials-topic" style="display:block;">
+                        <h2>Welcome to Tutorials</h2>
+                        <p>Select a topic from the navigation bar above to view information about it.</p>
+                    </div>
+                    <div id="tutorial-arithmetic" class="tutorials-topic" style="display:none;">
+                        <h2>Binary Arithmetic</h2>
+                        <p>This section covers binary addition, subtraction, and two's complement arithmetic.</p>
+                        <p>
+                            <strong>Binary Addition:</strong> To add two binary numbers, align them by their least significant bit (rightmost digit) and add each pair of bits, carrying over when the sum is 2 (10 in binary) or more. For example, 1 + 1 = 10, so you write 0 and carry 1 to the next column. Continue this process for all columns.
+                        </p>
+                        <p>
+                            <strong>Binary Subtraction:</strong> Subtracting binary numbers is similar to decimal subtraction. If the top bit is smaller than the bottom bit, borrow 1 from the next column to the left. For example, 0 - 1 requires borrowing, making it 10 - 1 = 1, and the next column is reduced by 1.
+                        </p>
+                        <p>
+                            <strong>Two's Complement:</strong> Two's complement is a method for representing negative numbers in binary. To find the two's complement of a binary number, invert all the bits (change 0 to 1 and 1 to 0) and add 1 to the result. This allows you to perform subtraction by adding the two's complement of a number.
+                        </p>
+                        <p>
+                            <strong>Quiz Tips:</strong> For arithmetic questions, pay attention to whether the numbers are signed (using two's complement) or unsigned. Always check the number of bits (usually 8) and remember to handle carries and borrows correctly.
+                        </p>
+                    </div>
+                    <div id="tutorial-ascii" class="tutorials-topic" style="display:none;">
+                        <h2>ASCII</h2>
+                        <p>This section explains the ASCII character encoding and how characters are represented as numbers.</p>
+                        <p>
+                            <strong>What is ASCII?</strong> ASCII (American Standard Code for Information Interchange) is a character encoding standard that assigns a unique number to each character (letters, digits, symbols, and control codes). For example, the letter 'A' is 65, 'a' is 97, and '0' is 48.
+                        </p>
+                        <p>
+                            <strong>Character to ASCII:</strong> To find the ASCII value of a character, look it up in an ASCII table or use programming functions (like <code>ord('A')</code> in Python). For quizzes, you may be asked to enter the decimal value for a given character.
+                        </p>
+                        <p>
+                            <strong>ASCII to Character:</strong> To convert an ASCII value to a character, use an ASCII table or a function (like <code>chr(65)</code> in Python). For quizzes, you may be given a number and asked to write the corresponding character.
+                        </p>
+                        <p>
+                            <strong>Quiz Tips:</strong> Remember that ASCII values for uppercase and lowercase letters are different. Control characters (values 0-31) are usually not included in quizzes. <br>
+                            <em>You do not need to memorise ASCII codes for exams—an ASCII table will be provided if needed. The quiz is just for fun and practice!</em>
+                        </p>
+                    </div>
+                    <div id="tutorial-conversion" class="tutorials-topic" style="display:none;">
+                        <h2>Base Conversion</h2>
+                        <p>This section covers converting numbers between different bases, such as binary, decimal, and hexadecimal.</p>
+                        <p>
+                            <strong>Decimal to Binary:</strong> Divide the decimal number by 2, recording the remainder. Continue dividing the quotient by 2 until you reach 0. The binary number is the remainders read from last to first.
+                        </p>
+                        <p>
+                            <strong>Binary to Decimal:</strong> Multiply each bit by 2 raised to its position index (starting from 0 on the right) and sum the results. For example, 1011 = 1×8 + 0×4 + 1×2 + 1×1 = 11.
+                        </p>
+                        <p>
+                            <strong>Decimal to Hexadecimal:</strong> Divide the decimal number by 16, recording the remainder. Continue dividing the quotient by 16 until you reach 0. The hexadecimal number is the remainders read from last to first, using A-F for values 10-15.
+                        </p>
+                        <p>
+                            <strong>Other Bases:</strong> The same process applies for any base. Use repeated division for conversion from decimal, and positional multiplication for conversion to decimal.
+                        </p>
+                        <p>
+                            <strong>Quiz Tips:</strong> Double-check your calculations, especially when converting to and from bases above 10 (where letters are used). Practice with small numbers to build confidence.
+                        </p>
+                    </div>
+                    <div id="tutorial-storage" class="tutorials-topic" style="display:none;">
+                        <h2>Storage Units</h2>
+                        <p>This section explains units of digital storage and how to convert between them.</p>
+                        <p>
+                            <strong>Units of Storage:</strong> The basic unit is the bit (b), which can be 0 or 1. 8 bits make a byte (B). Larger units include kilobyte (KB, 1024 bytes), megabyte (MB, 1024 KB), gigabyte (GB, 1024 MB), and so on. Sometimes, 1000 is used instead of 1024 for conversions (especially for hard drives).
+                        </p>
+                        <p>
+                            <strong>Unit Conversion:</strong> To convert between units, multiply or divide by 1024 (or 1000, depending on the context). For example, 2048 bytes = 2 KB (since 2048 ÷ 1024 = 2).
+                        </p>
+                        <p>
+                            <strong>Sound, Image, and Text Files:</strong> The size of a file depends on its type and properties. For sound files, size = sample rate × bit depth × channels × duration. For images, size = width × height × color depth. For text files, size = number of characters × bytes per character.
+                        </p>
+                        <p>
+                            <strong>Quiz Tips:</strong> Read the question carefully to determine which formula to use. Pay attention to units and always show your working for conversions.
+                        </p>
+                    </div>
+                    <div id="tutorial-nonint" class="tutorials-topic" style="display:none;">
+                        <h2>Non-Integer Binary</h2>
+                        <p>This section covers fixed point and floating point binary representations.</p>
+                        <p>
+                            <strong>Fixed Point:</strong> In fixed point representation, a certain number of bits are used for the integer part and the rest for the fractional part. For example, in 8 bits with 4 integer and 4 fractional bits, 1100.1010 means 12.625 in decimal (12 + 0.5 + 0.125).
+                        </p>
+                        <p>
+                            <strong>Floating Point:</strong> For two's complement floating point, the first digit (bit) represents -1, and the rest represent positive fractional values. For example, in a 4-bit two's complement fraction, 1010 means -1 + 0 + 0.25 + 0 = -0.75. This is different from sign-magnitude, and allows negative values by interpreting the first bit as negative.
+                        </p>
+                        <p>
+                            <strong>Operations:</strong> Addition and subtraction require aligning the binary points (for fixed point) or exponents (for floating point). Normalisation shifting the mantissa so that the first and second digit of the mantissa are not the same, then adjusting the exponent appropriately.
+                        </p>
+                        <p>
+                            <strong>Binary to Base 10:</strong> To convert a binary fraction to decimal, sum each bit multiplied by 2 raised to its negative position index (e.g., 0.101 = 1×0.5 + 0×0.25 + 1×0.125 = 0.625). For two's complement, remember the first bit is negative. For floating point, first convert the mantissa (using two's complement if needed), then multiply the result by 2 raised to the exponent value.
+                        </p>
+                        <p>
+                            <strong>Quiz Tips:</strong> Carefully identify the type of representation and follow the correct steps for each operation. Practice converting between binary and decimal for both integer and fractional values.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Main Quiz Area -->
+                <div class="container" id="quiz-container" style="display: none;">
+                    <h3 id="question">Question text will appear here.</h3>
+                    <textarea id="answer-input" placeholder="Enter your answer here"></textarea>
+                    <div class="quiz-action-buttons">
+                        <button class="button" id="submit-answer-btn">Submit Answer</button>
+                        <button class="button" id="skip-question-btn" style="display:none;" title="Skip">Skip</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="side"></div>
+
+        </div>
+    </main>
+
+    <footer>
+    </footer>
+</body>
+
+</html>
